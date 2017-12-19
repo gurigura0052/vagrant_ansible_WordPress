@@ -1,0 +1,19 @@
+MYSQL:
+  USER: root
+  PASS: root
+  NAME: testAnsible
+  
+WORDPRESS:
+  NAME: wp_directory_name
+  TITLE: サイト名
+  LOCALE: ja
+  URL: 192.168.33.10
+  DB:
+    NAME: "{{ MYSQL.NAME }}"
+    USER: "{{ MYSQL.USER }}"
+    PASSWORD: "{{ MYSQL.PASS }}"
+    HOST: localhost
+  ADMIN:
+    NAME: admin
+    PASSWORD: admin
+    MAIL_ADDRESS: example@gmail.com

@@ -1,0 +1,19 @@
+- hosts: vagrants
+  connection: local
+  become: yes
+  user: vagrant
+
+  roles:
+    - common
+    - repository
+    - Apache
+    - MySQL
+    - KVS
+    - PHP
+    - Composer
+    
+  tasks:
+  - name: restart httpd
+    service:
+      name: httpd
+      state: restarted

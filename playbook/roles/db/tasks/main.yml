@@ -1,0 +1,50 @@
+- name: get mysql password
+  shell: cat /var/log/mysqld.log | grep "temporary password" | awk '{print $11}'
+  register: mysql_default_password
+  
+- name: deploy init .my.cnf
+  template:
+    src: ../templates/init_my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0644
+  
+- name: change password validation to the easy way
+  shell: mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "SET GLOBAL validate_password_length=4;"
+    
+- name: change password validation to the easy way
+  shell: mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "SET GLOBAL validate_password_policy=LOW;"
+    
+- name: change root user password
+  shell: mysql -u root -p'{{ mysql_default_password.stdout }}' --connect-expired-password -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ MYSQL.PASS }}';"
+  
+- name: deploy changed .my.cnf
+  template:
+    src: ../templates/my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0644
+    
+- name: deploy changed .my.cnf
+  template:
+    src: templates/my.cnf.j2
+    dest: /etc/my.cnf
+    
+- name: remove all anonymous user
+  mysql_user:
+    name: ''
+    state: absent
+    host: localhost
+
+- name: create database
+  mysql_db:
+    name: "{{ MYSQL.NAME }}"
+    state: present
+    encoding: utf8mb4
+    
+- name: restart mysqld
+  service:
+    name: mysqld
+    state: restarted

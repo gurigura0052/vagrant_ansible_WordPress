@@ -1,0 +1,44 @@
+- name: wp-cli install
+  get_url:
+    url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+    dest: /usr/local/bin/wp
+    mode: 0755
+    
+- name: Create Directory
+  file:
+    dest: /var/www/html/{{ WORDPRESS.NAME }}
+    owner: apache
+    group: apache
+    state: directory
+    mode: 755
+    
+- name: WordPress Core Install
+  become: yes
+  become_user: apache
+  shell: /usr/local/bin/wp core download --locale={{ WORDPRESS.LOCALE }} --path=/var/www/html/{{ WORDPRESS.NAME }}
+
+- name: Setup Wordpress Config
+  become: yes
+  become_user: apache
+  shell: |
+    /usr/local/bin/wp core config \
+    --dbname={{ WORDPRESS.DB.NAME }} \
+    --dbuser={{ WORDPRESS.DB.USER }} \
+    --dbpass={{ WORDPRESS.DB.PASSWORD }} \
+    --dbhost={{ WORDPRESS.DB.HOST }} \
+    --dbprefix=wp
+  args:
+    chdir: "/var/www/html/{{ WORDPRESS.NAME }}"
+
+- name: Install Wordpress
+  become: yes
+  become_user: apache
+  shell: |
+    /usr/local/bin/wp core install \
+    --title={{ WORDPRESS.TITLE }} \
+    --admin_user={{ WORDPRESS.ADMIN.NAME }} \
+    --admin_password={{ WORDPRESS.ADMIN.PASSWORD }} \
+    --admin_email={{ WORDPRESS.ADMIN.MAIL_ADDRESS }} \
+    --url={{ WORDPRESS.URL }}/{{ WORDPRESS.NAME }}
+  args:
+    chdir: "/var/www/html/{{ WORDPRESS.NAME }}"

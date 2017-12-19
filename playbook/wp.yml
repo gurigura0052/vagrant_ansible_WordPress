@@ -1,0 +1,10 @@
+- hosts: vagrants
+  connection: local
+  become: yes
+  user: vagrant
+
+  roles:
+  - wordpress
+  
+  vars_files:
+  - ./gloup_vars/main.yml

@@ -1,0 +1,10 @@
+- hosts: dbservers
+  connection: local
+  become: yes
+  user: root
+
+  roles:
+    - db
+    
+  vars_files:
+  - ./gloup_vars/main.yml

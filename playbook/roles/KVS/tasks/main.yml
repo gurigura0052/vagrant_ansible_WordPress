@@ -1,0 +1,29 @@
+- name: KVS install
+  yum:
+    name: "{{ item }}"
+    enablerepo: remi,epel
+    state: latest
+  with_items:
+    - memcached
+    - redis
+    - ImageMagick
+
+- name: memcached start
+  service:
+    name: memcached
+    state: started
+
+- name: memcached enable
+  service:
+    name: memcached
+    enabled: yes
+
+- name: redis start
+  service:
+    name: redis
+    state: started
+
+- name: redis enable
+  service:
+    name: redis
+    enabled: yes

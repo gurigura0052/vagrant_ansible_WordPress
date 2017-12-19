@@ -1,0 +1,51 @@
+- name: PHP install
+  yum:
+    name: "{{ item }}"
+    enablerepo: remi-php71,epel
+    state: latest
+  with_items:
+    - php
+    - php-devel
+    - php-pear
+    - php-mysqlnd
+    - php-mbstring
+    - libmcrypt
+    - php-mcrypt
+    - php-gd
+    - php-pecl-imagick
+    - php-pecl-memcache
+    - php-pecl-redis
+
+- name: PHP install
+  yum:
+    name: "{{ item }}"
+    enablerepo: remi-php71,epel
+    state: installed
+  with_items:
+    - http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/o/openjpeg2-2.1.0-7.el7.x86_64.rpm
+    - http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/l/libraqm-0.1.1-1.el7.x86_64.rpm
+
+- name: php.ini timezone replace
+  replace:
+    path: /etc/php.ini
+    regexp: '^;date.timezone =$'
+    replace: 'date.timezone = Asia/Tokyo'
+    backup: yes
+
+- name: php.ini language replace
+  replace:
+    path: /etc/php.ini
+    regexp: '^;mbstring.language = Japanese$'
+    replace: 'mbstring.language = Japanese'
+
+- name: php.ini internal_encoding replace
+  replace:
+    path: /etc/php.ini
+    regexp: '^;mbstring.internal_encoding =$'
+    replace: 'mbstring.internal_encoding = UTF-8'
+
+- name: php.ini http_input replace
+  replace:
+    path: /etc/php.ini
+    regexp: '^;mbstring.http_input =$'
+    replace: 'mbstring.http_input = UTF-8'

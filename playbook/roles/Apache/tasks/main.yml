@@ -1,0 +1,21 @@
+- name: httpd install
+  yum:
+    name: httpd
+    state: latest
+
+- name: httpd.conf replace
+  replace:
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^#EnableMMAP off\nEnableSendfile on$'
+    replace: 'EnableMMAP off\nEnableSendfile off'
+    backup: yes
+
+- name: httpd start
+  service:
+    name: httpd
+    state: started
+
+- name: httpd enable
+  service:
+    name: httpd
+    enabled: yes

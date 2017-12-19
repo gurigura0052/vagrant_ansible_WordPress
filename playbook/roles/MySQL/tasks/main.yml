@@ -1,0 +1,29 @@
+- name: mysql Repository
+  yum:
+    name: http://dev.mysql.com/get/mysql57-community-release-el7-9.noarch.rpm
+    state: installed
+
+- name: mysql install
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - yum-utils
+    - MySQL-python
+    - mysql-community-server
+
+- name: mysql enable
+  service:
+    name: mysqld
+    enabled: yes
+
+- name: my.cnf replace
+  copy:
+    src: ../templates/my.cnf
+    dest: /etc/my.cnf
+    backup: yes
+
+- name: mysql start
+  service:
+    name: mysqld
+    state: started

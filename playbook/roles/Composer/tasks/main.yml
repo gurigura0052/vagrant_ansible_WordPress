@@ -1,0 +1,5 @@
+- name: composer install
+  shell: cd /tmp && curl -s http://getcomposer.org/installer | php
+
+- name: composer move
+  command: mv /tmp/composer.phar /usr/local/bin/composer
